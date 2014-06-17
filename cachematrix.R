@@ -4,19 +4,32 @@
 
 makeCacheMatrix <- function(x = matrix()) {
     ## Caches a matrix and its inverse
-    ## Initialize inverse to a matrix with all elements as NA
-    i = matrix(NA, nrow(x), ncol(x))
     ## Place the input matrix into cache
-    set <- function(y) {
+    setMat <- function(y) {
         x <<- y
-        i <<- matrix(NA, nrow(y), ncol(y))
+        i <<- NULL
     }
-    get <- function() x
-    setinverse <- function(invert) i <<- invert
-    getinverse <- function() i
-    list(set = set, get = get,
-         setinverse = setinverse,
-         getinverse = getinverse)
+    # Return the matrix from the cache
+    getMat <- function() {
+        x
+    }
+    # Place the inverse of matrix into cache
+    setInv <- function(invert) {
+        i <<- invert
+    }
+    # Return inverse of matrix from cache
+    getInv <- function() {
+        i
+    }
+    clearMat <- function() {
+        x <<- NULL
+        i <<- NULL
+    }
+
+    list(setMat = setMat, getMat = getMat,
+         setInv = setInv,
+         getInv = getInv,
+         clearMat = clearMat)
 }
 
 
@@ -25,13 +38,16 @@ cacheSolve <- function(x, ...) {
     ## Check if inverse of the matrix is in cache
     ## if inverse is a matrix with all elements as NA, it is not in cache
     ## then compute the inverse and place it in the cache for future calls
-    i = makeCacheMatrix(x)$getinverse()
-    if(!is.na(all(i))) {
-        message("getting cached data")
-        return(i)
+    inv = makeCacheMatrix(x)$getInv()
+    if(!is.null(inv)) {
+        print("getting cached data")
+        return(inv)
     }
-    data <- makeCacheMatrix(x)$get()
-    i <- solve(data, ...)
-    makeCacheMatrix(x)$setinverse(i)
-    i
+    else {
+#        inv <- solve(x, ...)
+        makeCacheMatrix(x)$setInv(solve(x, ...))
+#        m <- makeCacheMatrix(x)$getMat()
+#        print(m)
+        makeCacheMatrix(x)$getInv()
+    }
 }
