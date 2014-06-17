@@ -27,15 +27,14 @@ makeCacheMatrix <- function(x = matrix()) {
          clearCache = clearCache)
 }
 
-
 cacheSolve <- function(x, ...) {
     ## Return a matrix that is the inverse of 'x'
     ## Check if inverse of the matrix is in cache
-    ## if inverse is a matrix with all elements as NA, it is not in cache
+    ## if inverse is NULL, it is not in cache
     ## then compute the inverse and place it in the cache for future calls
     inv = x$getinverse()
     if(!is.null(inv)) {
-        print("getting inverse from cache")
+        message("Getting inverse from cache")
         return(inv)
     }
     else {
